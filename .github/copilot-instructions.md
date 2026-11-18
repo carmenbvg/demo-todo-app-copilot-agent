@@ -6,6 +6,7 @@ This repository is a Java 21 web application built with Spring Boot and Maven. K
 
 ## Architecture
 
+- Keep a clear separation between web, business, and data access concerns.
 - Keep the application entry point in the root application package so component scanning covers the application.
 - Organize production code by responsibility: web controllers, services, repositories, and domain/model types. Add layers only when they clarify responsibilities.
 - Keep HTTP concerns in controllers, business logic in services, and persistence details in repositories. Use request/response DTOs at API boundaries when appropriate.
