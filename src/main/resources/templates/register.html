@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Create an account</title>
+</head>
+<body>
+	<main>
+		<h1>Create an account</h1>
+		<p th:if="${param.success}">Your account has been created.</p>
+		<form th:action="@{/register}" th:object="${registrationForm}" method="post">
+			<div>
+				<label for="firstName">First name</label>
+				<input id="firstName" type="text" th:field="*{firstName}" autocomplete="given-name">
+				<p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+			</div>
+			<div>
+				<label for="lastName">Last name</label>
+				<input id="lastName" type="text" th:field="*{lastName}" autocomplete="family-name">
+				<p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+			</div>
+			<div>
+				<label for="email">Email address</label>
+				<input id="email" type="email" th:field="*{email}" autocomplete="email">
+				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+			</div>
+			<div>
+				<label for="password">Password</label>
+				<input id="password" name="password" type="password" autocomplete="new-password">
+				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+			</div>
+			<div>
+				<label for="passwordConfirmation">Password confirmation</label>
+				<input id="passwordConfirmation" name="passwordConfirmation" type="password" autocomplete="new-password">
+				<p th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}"></p>
+			</div>
+			<button type="submit">Create account</button>
+		</form>
+	</main>
+</body>
+</html>
