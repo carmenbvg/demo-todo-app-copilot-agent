@@ -1,7 +1,5 @@
 package com.appsdeveloperai.demo_todoapp.service;
 
-import java.util.Locale;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,7 @@ public class RegistrationService {
 	}
 
 	public boolean register(String firstName, String lastName, String email, String password) {
-		String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
+		String normalizedEmail = EmailNormalizer.normalize(email);
 		if (users.existsByEmail(normalizedEmail)) {
 			return false;
 		}

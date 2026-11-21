@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -85,7 +86,7 @@ class RegistrationControllerTests {
 
 	@Test
 	void missingFieldsAreRejected() throws Exception {
-		mvc.perform(post("/register"))
+		mvc.perform(post("/register").with(csrf()))
 				.andExpect(status().isOk())
 				.andExpect(content().string(containsString("First name is required")))
 				.andExpect(content().string(containsString("Last name is required")))
@@ -98,6 +99,7 @@ class RegistrationControllerTests {
 	@Test
 	void invalidFieldsAreRejected() throws Exception {
 		mvc.perform(post("/register")
+				.with(csrf())
 				.param("firstName", " ")
 				.param("lastName", "x".repeat(101))
 				.param("email", "not-an-email")
@@ -134,6 +136,7 @@ class RegistrationControllerTests {
 
 	private MockHttpServletRequestBuilder validRegistration(String email, String confirmation) {
 		return post("/register")
+				.with(csrf())
 				.param("firstName", "Ada")
 				.param("lastName", "Lovelace")
 				.param("email", email)
