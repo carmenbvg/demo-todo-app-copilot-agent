@@ -8,6 +8,7 @@
 	<main>
 		<h1>Create an account</h1>
 		<p th:if="${param.success}">Your account has been created.</p>
+		<p><a th:href="@{/login}">Sign in</a></p>
 		<form th:action="@{/register}" th:object="${registrationForm}" method="post">
 			<div>
 				<label for="firstName">First name</label>
