@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.appsdeveloperai.demo_todoapp.service.TodoService;
 
 @RestController
-@RequestMapping("/api/todos")
+@RequestMapping("/todos")
 public class TodoController {
 
 	private final TodoService todos;
@@ -42,7 +42,7 @@ public class TodoController {
 	public ResponseEntity<TodoResponse> create(@Valid @RequestBody TodoRequest request, Principal principal) {
 		TodoResponse todo = TodoResponse.from(todos.create(principal.getName(), request.title(),
 				Boolean.TRUE.equals(request.completed()), request.dueDate()));
-		return ResponseEntity.created(URI.create("/api/todos/" + todo.id())).body(todo);
+		return ResponseEntity.created(URI.create("/todos/" + todo.id())).body(todo);
 	}
 
 	@PutMapping("/{id}")

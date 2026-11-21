@@ -50,7 +50,7 @@ class TodoControllerTests {
 
 	@Test
 	void ownerCanCreateReadUpdateAndDeleteTodo() throws Exception {
-		String location = mvc.perform(post("/api/todos").with(user("ada@example.com")).with(csrf())
+		String location = mvc.perform(post("/todos").with(user("ada@example.com")).with(csrf())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("{\"title\":\"Write tests\",\"dueDate\":\"2026-12-01\"}"))
 				.andExpect(status().isCreated())
@@ -60,9 +60,9 @@ class TodoControllerTests {
 				.andExpect(jsonPath("$.dueDate").value("2026-12-01"))
 				.andExpect(jsonPath("$.user").doesNotExist())
 				.andReturn().getResponse().getHeader("Location");
-		assertThat(location).startsWith("/api/todos/");
+		assertThat(location).startsWith("/todos/");
 
-		mvc.perform(get("/api/todos").with(user("ada@example.com")))
+		mvc.perform(get("/todos").with(user("ada@example.com")))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.length()").value(1))
 				.andExpect(jsonPath("$[0].title").value("Write tests"));
@@ -87,11 +87,11 @@ class TodoControllerTests {
 
 	@Test
 	void otherUsersCannotSeeOrChangeTodo() throws Exception {
-		String location = mvc.perform(post("/api/todos").with(user("ada@example.com")).with(csrf())
+		String location = mvc.perform(post("/todos").with(user("ada@example.com")).with(csrf())
 				.contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"Private\"}"))
 				.andExpect(status().isCreated())
 				.andReturn().getResponse().getHeader("Location");
-		mvc.perform(get("/api/todos").with(user("grace@example.com")))
+		mvc.perform(get("/todos").with(user("grace@example.com")))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(0));
 		mvc.perform(get(location).with(user("grace@example.com"))).andExpect(status().isNotFound());
 		mvc.perform(put(location).with(user("grace@example.com")).with(csrf())
@@ -109,20 +109,20 @@ class TodoControllerTests {
 				"{}", "{\"title\":\"  \"}", "{\"title\":\"" + "x".repeat(256) + "\"}",
 				"{\"title\":\"Valid\",\"dueDate\":\"not-a-date\"}"
 		}) {
-			mvc.perform(post("/api/todos").with(user("ada@example.com")).with(csrf())
+			mvc.perform(post("/todos").with(user("ada@example.com")).with(csrf())
 					.contentType(MediaType.APPLICATION_JSON).content(body))
 					.andExpect(status().isBadRequest());
 		}
 		assertThat(todos.count()).isZero();
-		mvc.perform(get("/api/todos/999").with(user("ada@example.com"))).andExpect(status().isNotFound());
+		mvc.perform(get("/todos/999").with(user("ada@example.com"))).andExpect(status().isNotFound());
 	}
 
 	@Test
 	void authenticationAndCsrfAreRequired() throws Exception {
-		mvc.perform(get("/api/todos"))
+		mvc.perform(get("/todos"))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(header().string("Location", endsWith("/login")));
-		mvc.perform(post("/api/todos").with(user("ada@example.com"))
+		mvc.perform(post("/todos").with(user("ada@example.com"))
 				.contentType(MediaType.APPLICATION_JSON).content("{\"title\":\"Test\"}"))
 				.andExpect(status().isForbidden());
 		assertThat(todos.count()).isZero();
